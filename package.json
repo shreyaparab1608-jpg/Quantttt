@@ -1,0 +1,11 @@
+{
+  "name": "quantttt-war-room",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Executive War Room Dashboard for 2026 Strait of Hormuz Disruption by Team Quantttt",
+  "scripts": {
+    "dev": "npm --prefix dashboard run dev",
+    "build": "npm --prefix dashboard run build",
+    "preview": "npm --prefix dashboard run preview"
+  }
+}
