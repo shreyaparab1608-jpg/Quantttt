@@ -12,10 +12,10 @@ import '../utils/chartConfig';
 import { ROUTE_COLORS, ROUTE_ORDER, fmtUSD } from '../utils/dataProcessor';
 
 export default function PageCommercial({
-  marginByRoute,
-  costBreakdownByRoute,
-  customerConcentration,
-  bubbleData,
+  marginByRoute = {},
+  costBreakdownByRoute = {},
+  customerConcentration = [],
+  bubbleData = [],
 }) {
   const [marginMetric, setMarginMetric] = useState('total'); // 'total' | 'pct'
   const [showCaveatDetails, setShowCaveatDetails] = useState(false);
@@ -27,15 +27,15 @@ export default function PageCommercial({
       {
         data: ROUTE_ORDER.map(rt => {
           if (marginMetric === 'total') {
-            return marginByRoute[rt]?.totalMargin || 0;
+            return marginByRoute?.[rt]?.totalMargin || 0;
           } else {
-            return Number(((marginByRoute[rt]?.avgMarginPct || 0) * 100).toFixed(1));
+            return Number(((marginByRoute?.[rt]?.avgMarginPct || 0) * 100).toFixed(1));
           }
         }),
         backgroundColor: ROUTE_ORDER.map(rt => {
           const val = marginMetric === 'total'
-            ? (marginByRoute[rt]?.totalMargin || 0)
-            : (marginByRoute[rt]?.avgMarginPct || 0);
+            ? (marginByRoute?.[rt]?.totalMargin || 0)
+            : (marginByRoute?.[rt]?.avgMarginPct || 0);
           return val >= 0 ? '#238636' : '#b3202b';
         }),
         borderRadius: 3,
@@ -84,25 +84,25 @@ export default function PageCommercial({
     datasets: [
       {
         label: 'Base Freight',
-        data: ROUTE_ORDER.map(rt => costBreakdownByRoute[rt]?.freight || 0),
+        data: ROUTE_ORDER.map(rt => costBreakdownByRoute?.[rt]?.freight || 0),
         backgroundColor: '#388bfd',
         stack: 'cost',
       },
       {
         label: 'Bunker Fuel',
-        data: ROUTE_ORDER.map(rt => costBreakdownByRoute[rt]?.fuel || 0),
+        data: ROUTE_ORDER.map(rt => costBreakdownByRoute?.[rt]?.fuel || 0),
         backgroundColor: '#d29922',
         stack: 'cost',
       },
       {
         label: 'War Risk Insurance',
-        data: ROUTE_ORDER.map(rt => costBreakdownByRoute[rt]?.insurance || 0),
+        data: ROUTE_ORDER.map(rt => costBreakdownByRoute?.[rt]?.insurance || 0),
         backgroundColor: '#8957e5',
         stack: 'cost',
       },
       {
         label: 'DIFOT Penalties',
-        data: ROUTE_ORDER.map(rt => costBreakdownByRoute[rt]?.penalty || 0),
+        data: ROUTE_ORDER.map(rt => costBreakdownByRoute?.[rt]?.penalty || 0),
         backgroundColor: '#b3202b',
         stack: 'cost',
       },
@@ -135,11 +135,11 @@ export default function PageCommercial({
   };
 
   // ── 3. Cost Component Share (Doughnut / Pie Chart) ───────────────────────
-  const totalFreight = ROUTE_ORDER.reduce((s, rt) => s + (costBreakdownByRoute[rt]?.freight || 0), 0);
-  const totalFuel = ROUTE_ORDER.reduce((s, rt) => s + (costBreakdownByRoute[rt]?.fuel || 0), 0);
-  const totalInsurance = ROUTE_ORDER.reduce((s, rt) => s + (costBreakdownByRoute[rt]?.insurance || 0), 0);
-  const totalPenalty = ROUTE_ORDER.reduce((s, rt) => s + (costBreakdownByRoute[rt]?.penalty || 0), 0);
-  const grandTotalCost = totalFreight + totalFuel + totalInsurance + totalPenalty;
+  const totalFreight = ROUTE_ORDER.reduce((s, rt) => s + (costBreakdownByRoute?.[rt]?.freight || 0), 0);
+  const totalFuel = ROUTE_ORDER.reduce((s, rt) => s + (costBreakdownByRoute?.[rt]?.fuel || 0), 0);
+  const totalInsurance = ROUTE_ORDER.reduce((s, rt) => s + (costBreakdownByRoute?.[rt]?.insurance || 0), 0);
+  const totalPenalty = ROUTE_ORDER.reduce((s, rt) => s + (costBreakdownByRoute?.[rt]?.penalty || 0), 0);
+  const grandTotalCost = totalFreight + totalFuel + totalInsurance + totalPenalty || 1;
 
   const costDonutData = {
     labels: ['Bunker Fuel', 'Base Freight', 'War Risk Ins.', 'DIFOT Penalties'],
@@ -242,21 +242,21 @@ export default function PageCommercial({
   // ── 5. Revenue vs Margin % Bubble Quadrant ──────────────────────────────
   const bubbleChartData = {
     datasets: ROUTE_ORDER.map(rt => {
-      const items = bubbleData.filter(d => d.routeType === rt);
+      const items = (bubbleData || []).filter(d => d?.routeType === rt);
       return {
         label: rt.replace(' (Pre-Blockade)', ''),
         data: items.map(d => ({
-          x: d.x,
-          y: Number((d.y * 100).toFixed(1)),
-          r: d.r,
-          customer: d.customer,
-          product: d.product,
-          cargoValue: d.cargoValue,
-          marginUSD: d.marginUSD,
-          shipmentId: d.shipmentId,
+          x: d?.x || 0,
+          y: Number(((d?.y || 0) * 100).toFixed(1)),
+          r: d?.r || 5,
+          customer: d?.customer || '',
+          product: d?.product || '',
+          cargoValue: d?.cargoValue || 0,
+          marginUSD: d?.marginUSD || 0,
+          shipmentId: d?.shipmentId || '',
         })),
-        backgroundColor: ROUTE_COLORS[rt] + '90',
-        borderColor: ROUTE_COLORS[rt],
+        backgroundColor: (ROUTE_COLORS[rt] || '#8b94a5') + '90',
+        borderColor: ROUTE_COLORS[rt] || '#8b94a5',
         borderWidth: 1,
       };
     }),

@@ -1,63 +1,37 @@
 /**
  * chartConfig.js
  * ==============
- * Shared Chart.js defaults and plugin registrations.
- * Enforces the war-room dark aesthetic across all charts.
+ * Shared Chart.js defaults and plugin registrations via chart.js/auto.
+ * Enforces the war-room dark aesthetic across all charts (Bar, Line, Doughnut, Bubble, etc.).
  */
 
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  LineElement,
-  PointElement,
-  ArcElement,
-  Filler,
-  Tooltip,
-  Legend,
-  Title,
-} from 'chart.js';
-
-// Register all required Chart.js components
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  LineElement,
-  PointElement,
-  ArcElement,
-  Filler,
-  Tooltip,
-  Legend,
-  Title,
-);
+import ChartJS from 'chart.js/auto';
 
 // Global defaults for the war-room dark theme
-ChartJS.defaults.color = '#a0a0a0';
+ChartJS.defaults.color = '#8b94a5';
 ChartJS.defaults.borderColor = 'rgba(255,255,255,0.06)';
 ChartJS.defaults.font.family = "'Inter', 'Segoe UI', system-ui, sans-serif";
-ChartJS.defaults.font.size = 12;
+ChartJS.defaults.font.size = 11;
 ChartJS.defaults.plugins.legend.labels.usePointStyle = true;
-ChartJS.defaults.plugins.legend.labels.padding = 16;
-ChartJS.defaults.plugins.tooltip.backgroundColor = 'rgba(10,10,10,0.95)';
+ChartJS.defaults.plugins.legend.labels.padding = 14;
+ChartJS.defaults.plugins.tooltip.backgroundColor = 'rgba(19,23,31,0.95)';
 ChartJS.defaults.plugins.tooltip.titleColor = '#ffffff';
-ChartJS.defaults.plugins.tooltip.bodyColor = '#cccccc';
-ChartJS.defaults.plugins.tooltip.borderColor = 'rgba(179,32,43,0.4)';
+ChartJS.defaults.plugins.tooltip.bodyColor = '#8b94a5';
+ChartJS.defaults.plugins.tooltip.borderColor = '#2e3646';
 ChartJS.defaults.plugins.tooltip.borderWidth = 1;
-ChartJS.defaults.plugins.tooltip.cornerRadius = 8;
-ChartJS.defaults.plugins.tooltip.padding = 12;
-ChartJS.defaults.animation.duration = 800;
+ChartJS.defaults.plugins.tooltip.cornerRadius = 6;
+ChartJS.defaults.plugins.tooltip.padding = 10;
+ChartJS.defaults.animation.duration = 400;
 ChartJS.defaults.animation.easing = 'easeOutQuart';
 
 export const GRID_STYLE = {
-  color: 'rgba(255,255,255,0.05)',
+  color: 'rgba(255,255,255,0.04)',
   drawBorder: false,
 };
 
 export const TICK_STYLE = {
-  color: '#808080',
-  font: { size: 11 },
+  color: '#8b94a5',
+  font: { size: 10 },
 };
 
 /**
@@ -76,3 +50,5 @@ export const tooltipCallbacks = {
     return `${(val * 100).toFixed(1)}%`;
   },
 };
+
+export default ChartJS;

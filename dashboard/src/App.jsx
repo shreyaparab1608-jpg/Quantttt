@@ -20,6 +20,57 @@ import PageCommercial from './components/PageCommercial';
 import PageStrategic from './components/PageStrategic';
 import ExecutiveChatbot from './components/ExecutiveChatbot';
 
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error, errorInfo) {
+    console.error('ErrorBoundary caught:', error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{
+          padding: '2.5rem',
+          textAlign: 'center',
+          background: '#13171f',
+          border: '1px solid #2e3646',
+          borderRadius: '8px',
+          margin: '2rem 0',
+        }}>
+          <h3 style={{ color: '#f87171', fontSize: '1rem', fontWeight: 600 }}>
+            Unable to render this view
+          </h3>
+          <p style={{ color: '#8b94a5', fontSize: '0.8rem', marginTop: '0.5rem' }}>
+            {this.state.error?.message || 'An unexpected error occurred.'}
+          </p>
+          <button
+            onClick={() => this.setState({ hasError: false, error: null })}
+            style={{
+              marginTop: '1rem',
+              background: '#b3202b',
+              color: '#ffffff',
+              border: 'none',
+              padding: '8px 16px',
+              borderRadius: '4px',
+              fontSize: '0.8rem',
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+          >
+            Reload View
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 export default function App() {
   const [dataState, setDataState] = useState({
     loading: true,
@@ -114,39 +165,41 @@ export default function App() {
 
       {/* 3 Dedicated Sorted Pages */}
       <main>
-        {activePage === 'operations' && (
-          <PageOperations
-            weeklyRouteMix={data.weeklyRouteMix}
-            weekLabels={data.weekLabels}
-            transitByRoute={data.transitByRoute}
-            heldAvgStuck={data.heldAvgStuck}
-            difotByRoute={data.difotByRoute}
-            difotByProduct={data.difotByProduct}
-            productCategories={data.productCategories}
-            kpis={data.kpis}
-          />
-        )}
+        <ErrorBoundary key={activePage}>
+          {activePage === 'operations' && (
+            <PageOperations
+              weeklyRouteMix={data.weeklyRouteMix}
+              weekLabels={data.weekLabels}
+              transitByRoute={data.transitByRoute}
+              heldAvgStuck={data.heldAvgStuck}
+              difotByRoute={data.difotByRoute}
+              difotByProduct={data.difotByProduct}
+              productCategories={data.productCategories}
+              kpis={data.kpis}
+            />
+          )}
 
-        {activePage === 'commercial' && (
-          <PageCommercial
-            marginByRoute={data.marginByRoute}
-            costBreakdownByRoute={data.costBreakdownByRoute}
-            customerConcentration={data.customerConcentration}
-            bubbleData={data.bubbleData}
-          />
-        )}
+          {activePage === 'commercial' && (
+            <PageCommercial
+              marginByRoute={data.marginByRoute}
+              costBreakdownByRoute={data.costBreakdownByRoute}
+              customerConcentration={data.customerConcentration}
+              bubbleData={data.bubbleData}
+            />
+          )}
 
-        {activePage === 'strategic' && (
-          <PageStrategic
-            sensitivityHeatmap={data.sensitivityHeatmap}
-            productCategories={data.productCategories}
-            insuranceBurdenByProduct={data.insuranceBurdenByProduct}
-            insuranceBurdenByCargo={data.insuranceBurdenByCargo}
-            cargoTypes={data.cargoTypes}
-            topExposures={data.topExposures}
-            recommendations={data.recommendations}
-          />
-        )}
+          {activePage === 'strategic' && (
+            <PageStrategic
+              sensitivityHeatmap={data.sensitivityHeatmap}
+              productCategories={data.productCategories}
+              insuranceBurdenByProduct={data.insuranceBurdenByProduct}
+              insuranceBurdenByCargo={data.insuranceBurdenByCargo}
+              cargoTypes={data.cargoTypes}
+              topExposures={data.topExposures}
+              recommendations={data.recommendations}
+            />
+          )}
+        </ErrorBoundary>
       </main>
 
       {/* Embedded Executive AI Advisor Chatbot */}
